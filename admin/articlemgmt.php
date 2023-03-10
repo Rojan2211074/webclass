@@ -54,9 +54,9 @@ if(isset($_POST['addcategory'])){
     </div>
 </div>
 <div class="row">
-    <div class="col-xxl-6">List Category <br>
+    <div class="col-xxl-6">List Artcle <br>
     <?php
-    $sql="SELECT * FROM category ORDER BY id DESC";
+    $sql="SELECT * FROM article ORDER BY id DESC";
     include("../connection.php");
     $qry=mysqli_query($conn, $sql) or die(mysqli_error($conn));
     $count=mysqli_num_rows($qry);
@@ -64,17 +64,17 @@ if(isset($_POST['addcategory'])){
     {
     echo "We have total $count Records";
     echo "<table class='table table-striped table-hover'>";
-    echo "<tr><thead><th>SN</th><th>Category Name</th><th>Description</th><th>Image</th><th>Status</th><th></th></tr>";
+    echo "<tr><thead><th>SN</th><th>CategoryID</th><th>UserID</th><th>Title</th><th>Status</th><th></th></tr>";
     while($row=mysqli_fetch_array($qry)){
         $id=$row['id'];
-        $image=$row['thumbimg'];
+        $image=$row['featureimg'];
         echo "<tr>";
         echo "<td>".$row['id']."</td>";
-        echo "<td>".$row['name']."</td>";
-        echo "<td>".$row['description']."</td>";
-        echo "<td><img src='../uploads/".$row['thumbimg']."' width='150px'></td>";
+        echo "<td>".$row['category_id']."</td>";
+        echo "<td>".$row['user_id']."</td>";
+        echo "<td>".$row['title']."</td>";
         echo "<td>".$row['status']."</td>";
-        echo "<td><a href=editdeletecategory.php?id=$id&action=edit>EDIT</a> | <a href=editdeletecategory.php?id=$id&action=delete&img=$image>DELETE</a></td>";
+        echo "<td><a href=editdeletearticle.php?id=$id&action=edit>EDIT</a> | <a href=editdeletearticle.php?id=$id&action=delete&img=$image>DELETE</a></td>";
         echo "</tr>";
     }
 
@@ -83,7 +83,7 @@ if(isset($_POST['addcategory'])){
     }
     else
     {
-        echo "Sorry No Category Found";
+        echo "Sorry No Article Found";
     }
     ?>
 
@@ -92,9 +92,25 @@ if(isset($_POST['addcategory'])){
     </div>
     <div class="col-xxl-6">
 
-    <form method="post" action="" name="category" enctype="multipart/form-data">
+    <form method="post" action="" name="article" enctype="multipart/form-data">
         <fieldset>
-            <legend>Add Category</legend>
+            <legend>Add Article</legend>
+            <select>
+                <?php
+                $sql="SELECT * FROM category ORDER BY id DESC";
+                include("../connection.php");
+                $qry=mysqli_query($conn, $sql) or die(mysqli_error($conn));
+                while($row=mysqli_fetch_array($qry))
+                {
+               
+                echo "<option value=".$row['id']."> ".$row['name']."</option>";
+                
+                 }
+                ?>
+            </select>
+            <br>
+            <input type="hidden" name="user_id" value="<?php echo $_SESSION['userid'];?>">
+            <br>
             <input type="text" name="name" placeholder="Category Name">
             <br>
             <input type="text" name="description" placeholder="Description">

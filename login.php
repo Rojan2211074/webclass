@@ -12,6 +12,12 @@ session_start();
         $qry=mysqli_query($conn, $sql) or die(mysqli_error($conn));
         //counting the affected rows
         $count=mysqli_num_rows($qry);
+
+        //getting the users roles and id
+        while($row=mysqli_fetch_array($qry)){
+            $userid=$row['id'];
+            $userrole=$row['role'];
+        }
         if($count==1){
             //setting the username and password cookie for 15 days
             if(!empty($remme)){
@@ -21,6 +27,8 @@ session_start();
             //register the session
             $_SESSION["username"]=$user;
             $_SESSION["accesstime"]=date('Ymdhisa');
+            $_SESSION["userid"]=$userid;
+            $_SESSION["userrole"]=$userrole;
             //redirect if user valid
             header("Location:admin/dashboard.php"); 
         }
