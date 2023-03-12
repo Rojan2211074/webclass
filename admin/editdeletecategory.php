@@ -3,23 +3,38 @@ include("sessioncheck.php");
 if(isset($_POST['update'])){
 //collecting data for update process
 $uid=$_POST['uid'];
-$username=$_POST['username'];
-$password=$_POST['password'];
-$email=$_POST['email'];
-$role=$_POST['role'];
-$status=$_POST['status'];
+$name=$_POST['name'];
+$description=$_POST['description'];
+$status=$_POST["status"];
 
-if(!empty($password))
+$oldthumbimg=$_POST['oldimage'];
+$imgname=$_FILES['thumbimg']["name"];
+$size=$_FILES["thumbimg"]["size"];
+$type=$_FILES["thumbimg"]["type"];
+$tmpname=$_FILES["thumbimg"]["tmp_name"];
+$uploadlocation="../uploads/category/".$imgname;
+
+
+
+
+
+if(!empty($name))
 {
-    $sql ="UPDATE users SET username='$username', password=md5('$password'), email='$email', role='$role', status=$status WHERE id=$uid";
+    $sql ="UPDATE category SET name='$name', description='$description', thumbimg='$imgname', status=$status WHERE id=$uid";
 }
-else{
-    $sql ="UPDATE users SET username='$username', email='$email', role='$role', status=$status WHERE id=$uid";
-}
+
 include("../connection.php");
 $qry=mysqli_query($conn, $sql)or die(mysqli_error($conn));
-if($qry){
-    header("Location:usermgmt.php");
+if(move_uploaded_file($tmpname, $uploadlocation))
+{
+    echo "File uloaded";
+    $qry=mysqli_query($conn, $sql) or die(mysqli_error($conn));
+    if($qry){
+    echo "Data Inserted Successfully";
+    header("Location:categorymgmt.php");
+    unlink("../uploads/category/".$oldthumbimg);
+
+    }
 }
 }
 
@@ -43,7 +58,7 @@ if($qry){
     </div>
 </div>
 <div class="row">
-    <div class="col-xxl-12">List Users <br>
+    <div class="col-xxl-12">List Categories <br>
     <?php
     $uid=$_GET['id'];
     $action=$_GET['action'];
@@ -56,7 +71,7 @@ if($qry){
         include("../connection.php");
         $qry=mysqli_query($conn, $sql) or die(mysqli_error($conn));
         if($qry){
-            unlink("../uploads/".$image);
+            unlink("../uploads/category/".$image);
             header("Location:categorymgmt.php");
 
         }
@@ -64,26 +79,29 @@ if($qry){
     }
     elseif(!empty($uid) && $action=="edit"){
         //SQL for selecting the related records info
-        $sql = "SELECT * FROM users WHERE id=$uid ";
+        $sql = "SELECT * FROM category WHERE id=$uid";
         include("../connection.php");
         $qry=mysqli_query($conn, $sql) or die(mysqli_error($conn));
         while($row=mysqli_fetch_array($qry)){
             $eid=$row['id'];
-            $eusername=$row['username'];
-            $eemail=$row['email'];
-            $erole=$row['role'];
+            $ename=$row['name'];
+            $edescription=$row['description'];
+            $ethumbimg=$row['thumbimg'];
+            $oldthumbimg=$row['thumbimg'];
+
             $estatus=$row['status'];
-        echo "<form action='' method='post'>";
+        echo "<form action='' method='post' enctype='multipart/form-data'>";
         echo "<fieldset><legend>".$uid. "Edit</legend>";
         echo "<input type=number name=uid value=$eid readonly>";
         echo "<br>";
-        echo "<input type=text name=username value='$eusername'>";
+        echo "<input type=text name=name value='$ename'>";
         echo "<br>";
-        echo "<input type=text name=password placeholder=Password>";
+        echo "<textarea rows=10 name=description cols=50> $edescription </textarea>"
+        
         echo "<br>";
-        echo "<input type=email name=email value=$eemail>";
-        echo "<br>";
-        echo "<input type=text name=role value='$erole'>";
+        echo "<input type='file' name='thumbimg'>";
+        // echo "<br>";
+        echo "<input type=hidden name=oldimage value='$oldthumbimg'>";
         echo "<br>";
         echo "<input type=number name=status value='$estatus'>";
         echo "<br>";
@@ -97,7 +115,7 @@ if($qry){
 
     }
     else{
-        header("Location:usermgmt.php");
+        header("Location:categorymgmt.php");
     }
    
    

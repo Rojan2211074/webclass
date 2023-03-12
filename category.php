@@ -10,12 +10,13 @@
 <body>
     <div class="container">
         <?php include("inc_bannermenu.php");?>
+        <div class=row>
         
-       <div class="row">
-       <?php
-            
+            <?php
+            if(isset($_GET['id'])){
+                $catid=$_GET['id'];
 
-                $sql="SELECT * from article  ORDER BY id DESC LIMIT 0,5" ;
+                $sql="SELECT * from article WHERE category_id=$catid ORDER BY id DESC LIMIT 0,15" ;
                 include("connection.php");
                 $qry=mysqli_query($conn, $sql) or die(mysqli_error($conn));
                 $count=mysqli_num_rows($qry);
@@ -25,31 +26,35 @@
                     while($row=mysqli_fetch_array($qry)){
                         $img=$row['featureimg'];
                         $title=$row['title'];
-                        $desc=substr($row['description'],0,400);
+                        $desc=substr($row['description'],0,200);
 
-                        echo "<div class=row>
-                        <div class=col-xxl-12>
+                        echo "<div class=col-xxl-4>
                         <img src='uploads/article/$img' alt='$title' class='img-fluid'>
                         <h2>$title</h2>
                         <p>$desc</p>
                     
-                        </div></div>";
+                        </div>";
                     }
 
-              
+                }
+                else{
+                    echo "Sorry No Result Found";
+                }
 
 
 
             }
 
             ?>
-        </div>
-        
+
+       
+         
     </div>
 
 <?php
 include("inc_footer.php");
 ?>
+</div>
     
 </body>
 </html>

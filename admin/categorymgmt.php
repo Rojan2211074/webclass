@@ -15,7 +15,7 @@ if(isset($_POST['addcategory'])){
     //to capture the temporary name
     $tmpname=$_FILES["thumbimg"]["tmp_name"];
     //file upload location
-    $uploadlocation="../uploads/".$imgname;
+    $uploadlocation="../uploads/category/".$imgname;
     //moving the uploaded file into uploads directory
     //Preparing the sql statement
     $sql = "INSERT INTO category(name, description, thumbimg, status)VALUES('$name', '$description', '$imgname', '$status')";
@@ -72,7 +72,7 @@ if(isset($_POST['addcategory'])){
         echo "<td>".$row['id']."</td>";
         echo "<td>".$row['name']."</td>";
         echo "<td>".$row['description']."</td>";
-        echo "<td><img src='../uploads/".$row['thumbimg']."' width='150px'></td>";
+        echo "<td><img src='../uploads/category/".$row['thumbimg']."' width='150px'></td>";
         echo "<td>".$row['status']."</td>";
         echo "<td><a href=editdeletecategory.php?id=$id&action=edit>EDIT</a> | <a href=editdeletecategory.php?id=$id&action=delete&img=$image>DELETE</a></td>";
         echo "</tr>";

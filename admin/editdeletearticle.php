@@ -2,24 +2,37 @@
 include("sessioncheck.php");
 if(isset($_POST['update'])){
 //collecting data for update process
-$uid=$_POST['uid'];
-$username=$_POST['username'];
-$password=$_POST['password'];
-$email=$_POST['email'];
-$role=$_POST['role'];
-$status=$_POST['status'];
+$article_id=$_POST['aid'];
+$category_id=$_POST['cid'];
+$user_id=$_POST['uid'];
+$title=$_POST['title'];
+$description=$_POST['description'];
+$status=$_POST["status"];
 
-if(!empty($password))
+$oldfeatureimg=$_POST['oldimage'];
+$imgname=$_FILES['featureimg']["name"];
+$size=$_FILES["featureimg"]["size"];
+$type=$_FILES["featureimg"]["type"];
+$tmpname=$_FILES["featureimg"]["tmp_name"];
+$uploadlocation="../uploads/article/".$imgname;
+
+if(!empty($title))
 {
-    $sql ="UPDATE users SET username='$username', password=md5('$password'), email='$email', role='$role', status=$status WHERE id=$uid";
+    $sql ="UPDATE article SET id='$article_id', category_id='$category_id', user_id='$user_id', title='$title', description='$description',featureimg='$imgname', status=$status WHERE id=$article_id";
 }
-else{
-    $sql ="UPDATE users SET username='$username', email='$email', role='$role', status=$status WHERE id=$uid";
-}
+
 include("../connection.php");
 $qry=mysqli_query($conn, $sql)or die(mysqli_error($conn));
-if($qry){
-    header("Location:usermgmt.php");
+if(move_uploaded_file($tmpname, $uploadlocation))
+{
+    
+    $qry=mysqli_query($conn, $sql) or die(mysqli_error($conn));
+    if($qry){
+    
+    header("Location:articlemgmt.php");
+    unlink("../uploads/article/".$oldfeatureimg);
+
+    }
 }
 }
 
@@ -43,7 +56,7 @@ if($qry){
     </div>
 </div>
 <div class="row">
-    <div class="col-xxl-12">List Users <br>
+    <div class="col-xxl-12">List Categories <br>
     <?php
     $uid=$_GET['id'];
     $action=$_GET['action'];
@@ -56,7 +69,7 @@ if($qry){
         include("../connection.php");
         $qry=mysqli_query($conn, $sql) or die(mysqli_error($conn));
         if($qry){
-            unlink("../uploads/".$image);
+            unlink("../uploads/category/".$image);
             header("Location:categorymgmt.php");
 
         }
@@ -64,26 +77,40 @@ if($qry){
     }
     elseif(!empty($uid) && $action=="edit"){
         //SQL for selecting the related records info
-        $sql = "SELECT * FROM users WHERE id=$uid ";
+        $sql = "SELECT * FROM article WHERE id=$uid";
         include("../connection.php");
         $qry=mysqli_query($conn, $sql) or die(mysqli_error($conn));
         while($row=mysqli_fetch_array($qry)){
             $eid=$row['id'];
-            $eusername=$row['username'];
-            $eemail=$row['email'];
-            $erole=$row['role'];
+            $ecategory_id=$row['category_id'];
+            $euser_id=$row['user_id'];
+            $etitle=$row['title'];
+            $edescription=$row['description'];
+            $efeatureimg=$row['featureimg'];
+            $eoldthumbimg=$row['featureimg'];
             $estatus=$row['status'];
-        echo "<form action='' method='post'>";
+        echo "<form action='' method='post' enctype='multipart/form-data'>";
         echo "<fieldset><legend>".$uid. "Edit</legend>";
-        echo "<input type=number name=uid value=$eid readonly>";
+        echo "Article ID";
+        
+        echo "<input type=number name=aid value=$eid readonly>";
         echo "<br>";
-        echo "<input type=text name=username value='$eusername'>";
+        echo "catID";
+        echo "<input type=number name=cid value=$ecategory_id>";
         echo "<br>";
-        echo "<input type=text name=password placeholder=Password>";
+        echo "userID";
+        echo "<input type=text name=uid value='$euser_id'>";
         echo "<br>";
-        echo "<input type=email name=email value=$eemail>";
+        echo "Title";
+        echo "<input type=text name=title value='$etitle'>";
         echo "<br>";
-        echo "<input type=text name=role value='$erole'>";
+        echo "Descirioption";
+
+        echo "<input type=text name=description value='$edescription'>";
+        echo "<br>";
+        echo "<input type='file' name='featureimg'>";
+        // echo "<br>";
+        echo "<input type=hidden name=oldimage value='$eoldthumbimg'>";
         echo "<br>";
         echo "<input type=number name=status value='$estatus'>";
         echo "<br>";
@@ -97,7 +124,7 @@ if($qry){
 
     }
     else{
-        header("Location:usermgmt.php");
+        header("Location:categorymgmt.php");
     }
    
    
