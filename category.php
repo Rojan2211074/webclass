@@ -24,13 +24,14 @@
                    
 
                     while($row=mysqli_fetch_array($qry)){
+                        $aid=$row['id'];
                         $img=$row['featureimg'];
                         $title=$row['title'];
                         $desc=substr($row['description'],0,200);
 
                         echo "<div class=col-xxl-4>
                         <img src='uploads/article/$img' alt='$title' class='img-fluid'>
-                        <h2>$title</h2>
+                        <h2><a href=details.php?id=$aid>$title<a></h2>
                         <p>$desc</p>
                     
                         </div>";

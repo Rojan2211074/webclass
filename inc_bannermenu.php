@@ -27,11 +27,39 @@
         </li>";
         }
         ?>
+
+        <?php
+        if(!isset($_SESSION["username"]))
+        {
+  echo "        
+<li class=\"nav-item\">
+<a class=\"nav-link\" aria-current=\"page\" href=\"register.php\">Register</a>
+</li>";
+
+echo "        
+<li class=\"nav-item\">
+<a class=\"nav-link\" aria-current=\"page\" href=\"login.php\">Login</a>
+</li>";
+
+
+        }
+        else{
+
+          echo "Welcome, ".$_SESSION['username']."    
+<li class=\"nav-item\">
+<a class=\"nav-link\" aria-current=\"page\" href=\"admin/logout.php\">Logout</a>
+</li>";
+
+        }
+        ?>
+
+
+
       
       </ul>
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
+      <form method="post" class="d-flex" role="search" action="search.php">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="searchkey">
+        <button class="btn btn-outline-success" type="submit" name ="search" >Search</button>
       </form>
     </div>
   </div>

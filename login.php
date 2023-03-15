@@ -30,7 +30,13 @@ session_start();
             $_SESSION["userid"]=$userid;
             $_SESSION["userrole"]=$userrole;
             //redirect if user valid
+            if($userrole=="admin"){
             header("Location:admin/dashboard.php"); 
+            }
+            else{
+                header("Location:index.php");
+
+            }
         }
         else{
             echo "Login Failed";
