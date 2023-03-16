@@ -33,7 +33,7 @@
         {
   echo "        
 <li class=\"nav-item\">
-<a class=\"nav-link\" aria-current=\"page\" href=\"register.php\">Register</a>
+<a class=\"nav-link\" aria-current=\"page\" href=\"userregister.php\">Register</a>
 </li>";
 
 echo "        
