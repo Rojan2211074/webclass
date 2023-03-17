@@ -21,6 +21,25 @@
         //executing query
         $qry=mysqli_query($conn, $sql) or die(mysqli_error($conn));
         if($qry){
+            // Always set content-type when sending HTML email
+$headers = "MIME-Version: 1.0" . "\r\n";
+$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+
+// More headers
+$headers .= 'From: <lalpower77@gmail.com>' . "\r\n";
+$headers .= 'Cc: maharjanoptex@gmail.com' . "\r\n";
+
+$message = "Thank you for registration with us <b>Hi ".$user."</b> , Thank you for registration with us. Please clcik below link to verify your account. ";
+
+$message.="<a href=http://172.16.3.52/group02/verify.php?username=$user&email=$email>Verify</a>";
+$subject= "Thank you for registration with us";
+
+if(mail($email, $subject,  $message, $headers)){
+    echo "Email Send";
+}
+else{
+    echo "Unable to send the email";
+}
             echo "Data Inserted Successfully";
         }
     }
